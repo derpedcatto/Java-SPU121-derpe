@@ -1,5 +1,10 @@
 package step.learning;
 
+import step.learning.basics.ArraysLoops;
+import step.learning.basics.Collections;
+import step.learning.basics.Variables;
+import step.learning.basics.ticktacktoe.TickTackToe;
+
 /**
  * Hello world!
  *
@@ -8,7 +13,10 @@ public class App
 {
     public static void main( String[] args )
     {
-        System.out.println( "Hello World!" );
+        // new Variables().demo();
+        // new ArraysLoops().demo();
+        // new Collections().demo();
+        new TickTackToe().init();
     }
 }
 
@@ -27,7 +35,7 @@ public class App
 - JDK - вибираємо (або скачуємо) 1.8
 - Archetype: quickstart
      org.apache.maven.archetypes:maven-archetype-quickstart
-- Advanced Settings
+- Advanced GameSettings
   = GroupId: step.learning
 
 Після створення проекту налаштовуємо конфігурацію запуску
