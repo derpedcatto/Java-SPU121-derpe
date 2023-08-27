@@ -1,15 +1,12 @@
 package step.learning;
 
-import step.learning.basics.ArraysLoops;
-import step.learning.basics.Collections;
-import step.learning.basics.Variables;
-import step.learning.basics.oop.Library;
-import step.learning.basics.ticktacktoe.TickTackToe;
+import com.google.inject.Guice;
+import com.google.inject.Injector;
+import step.learning.db.DbApp;
+import step.learning.db.DbConfigModule;
+import step.learning.ioc.IoCConfigModule;
+import step.learning.ioc.IocApp;
 
-/**
- * Hello world!
- *
- */
 public class App 
 {
     public static void main( String[] args )
@@ -18,8 +15,13 @@ public class App
         // new ArraysLoops().demo();
         // new Collections().demo();
         // new TickTackToe().init();
+        // new Library().demo();
 
-        new Library().demo();
+        // Injector injector = Guice.createInjector( new IoCConfigModule() );
+        // injector.getInstance( IocApp.class ).demo();
+
+        Injector injector = Guice.createInjector( new DbConfigModule() );
+        injector.getInstance( DbApp.class ).demo();
     }
 }
 
