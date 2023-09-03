@@ -1,4 +1,4 @@
-package step.learning.db;
+package step.learning.services.random;
 
 public interface RandomGenService {
     int randInt(int bound);

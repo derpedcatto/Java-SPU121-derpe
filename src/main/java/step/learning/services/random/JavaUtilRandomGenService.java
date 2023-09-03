@@ -1,8 +1,5 @@
-package step.learning.db;
+package step.learning.services.random;
 
-import com.google.inject.Singleton;
-
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.Random;
 

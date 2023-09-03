@@ -4,8 +4,6 @@ import com.google.inject.Guice;
 import com.google.inject.Injector;
 import step.learning.db.DbApp;
 import step.learning.db.DbConfigModule;
-import step.learning.ioc.IoCConfigModule;
-import step.learning.ioc.IocApp;
 
 public class App 
 {

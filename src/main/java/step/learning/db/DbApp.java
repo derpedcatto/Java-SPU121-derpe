@@ -1,61 +1,147 @@
 package step.learning.db;
 
 import com.google.inject.Inject;
-import com.google.inject.Singleton;
+import step.learning.db.dao.RandomDao;
+import step.learning.db.dto.RandomRecord;
+import step.learning.services.random.RandomGenService;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.Statement;
+import java.util.UUID;
 
 public class DbApp {
-    private Connection connection;
+    private final RandomGenService randGen;
+    private final RandomDao randomDao;
+
+
     @Inject
-    private RandomGenService randGen;
+    public DbApp(RandomGenService randGen, RandomDao randomDao) {
+        this.randGen = randGen;
+        this.randomDao = randomDao;
+    }
+
 
     public void demo() {
+        // region Створення таблиці randoms
+
+        try {  // ~ SqlCommand (ADO.NET)
+            randomDao.ensureCreate();
+            System.out.println("TABLE OK");
+        }
+        catch (RuntimeException ex) {
+            System.err.println( ex.getMessage() );
+        }
+
+        // endregion
+
+
+
+        // region Додати до БД випадковий рядок
+
         try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            connection = DriverManager.getConnection(
-                    "jdbc:mysql://localhost:3306/java_spu121?useUnicode=true&characterEncoding=UTF-8",
-                    "spu121",
-                    "pass121");
+            randomDao.insertRandom();
+        }
+        catch(Exception ex) {
+            System.err.println(ex.getMessage());
+            return;
+        }
+
+        System.out.println("RANDOM INSERT OK");
+
+        //endregion
+
+
+
+        // region Додати до БД рядок
+
+        try {
+            RandomRecord record = new RandomRecord(
+                    UUID.randomUUID(),
+                    randGen.randInt(256),
+                    randGen.randFloat(),
+                    randGen.randStr(15)
+            );
+            randomDao.insert(record);
+        }
+        catch(Exception ex) {
+            System.err.println(ex.getMessage());
+            return;
+        }
+
+        System.out.println("INSERT OK");
+
+        // endregion
+
+
+
+        // region Видалити перший елемент таблиці
+
+        try {
+            RandomRecord record = randomDao.getAll().get(0);
+            randomDao.delete(record);
+        }
+        catch(Exception ex) {
+            System.err.println(ex.getMessage());
+            return;
+        }
+
+        System.out.println("DELETE OK");
+
+        // endregion
+
+
+
+        // region Обновити перший елемент таблиці
+
+        try {
+            RandomRecord record = randomDao.getAll().get(0);
+            record.setRandInt(randGen.randInt(256));
+            record.setRandFloat(randGen.randFloat());
+            record.setRandStr(randGen.randStr(12));
+
+            randomDao.update(record);
+        }
+        catch(Exception ex) {
+            System.err.println(ex.getMessage());
+            return;
+        }
+
+        System.out.println("UPDATE OK");
+
+        // endregion
+
+
+        // region Перевірка існування першого рядка таблиці
+
+        try {
+            RandomRecord record = randomDao.getAll().get(0);
+
+            if (randomDao.recordExists(record)) {
+                System.out.println(record.getId() + " exists");
+            }
+        }
+        catch(Exception ex) {
+            System.err.println(ex.getMessage());
+            return;
+        }
+
+        System.out.println("RECORDEXISTS OK");
+
+        // endregion
+
+
+        // region Виведення даних
+
+        try {
+            for (RandomRecord rec : randomDao.getAll()) {
+                System.out.print(rec);
+            }
         }
         catch (Exception ex) {
             System.err.println(ex.getMessage());
             return;
         }
-        System.out.println("Connection OK");
+        System.out.println("-----------------------------------");
 
-        String sql = "CREATE TABLE IF NOT EXISTS randoms (" +
-                     "id         CHAR(36) PRIMARY KEY," +
-                     "rand_int   INT," +
-                     "rand_float FLOAT," +
-                     "rand_str   TEXT" +
-                     ") Engine = InnoDB, DEFAULT CHARSET = utf8";
-
-        try (Statement statement = connection.createStatement()) {  // ~ SqlCommand (ADO.NET)
-            statement.executeUpdate(sql);
-            System.out.println("TABLE OK");
-        }
-        catch (Exception ex) {
-            System.err.println( ex.getMessage() );
-        }
-
-
-        String insertSql = "INSERT INTO randoms (id, rand_int, rand_float, rand_str) VALUES (" +
-                           "\"" + java.util.UUID.randomUUID() + "\", " +
-                           randGen.randInt(256) + ", " +
-                           randGen.randFloat() + ", " +
-                           "\"" + randGen.randStr(10) + "\"" +
-                           ");";
-
-        try (Statement statement = connection.createStatement()) {  // ~ SqlCommand (ADO.NET)
-            statement.executeUpdate(insertSql);
-            System.out.println("INSERT OK");
-        }
-        catch (Exception ex) {
-            System.err.println( ex.getMessage() );
-        }
+        // endregion
     }
 }
 
