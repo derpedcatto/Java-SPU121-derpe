@@ -2,6 +2,8 @@ package step.learning;
 
 import com.google.inject.Guice;
 import com.google.inject.Injector;
+import step.learning.async.AsyncApp;
+import step.learning.async.AsyncConfigModule;
 import step.learning.db.DbApp;
 import step.learning.db.DbConfigModule;
 
@@ -18,8 +20,8 @@ public class App
         // Injector injector = Guice.createInjector( new IoCConfigModule() );
         // injector.getInstance( IocApp.class ).demo();
 
-        Injector injector = Guice.createInjector( new DbConfigModule() );
-        injector.getInstance( DbApp.class ).demo();
+        Injector injector = Guice.createInjector( new AsyncConfigModule() );
+        injector.getInstance( AsyncApp.class ).demo();
     }
 }
 
